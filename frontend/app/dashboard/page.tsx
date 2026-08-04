@@ -15,24 +15,29 @@ export default function DashboardPage() {
   return (
     
     <DashboardLayout>
-        <Link
-            href="/dashboard/create"
-            className="rounded-lg bg-green-600 px-5 py-3 text-white hover:bg-green-700"
-                >
-            + Create Tournament
-        </Link>
+        {/* Heading */}
+<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
+  <div>
+    <h1 className="text-3xl font-bold">
+      Dashboard
+    </h1>
+
+    <p className="text-muted-foreground">
+      Welcome back! Here's what's happening today.
+    </p>
+  </div>
+
+  <Link
+    href="/dashboard/create"
+    className="rounded-lg bg-green-600 px-5 py-3 text-white transition hover:bg-green-700"
+  >
+    + Create Tournament
+  </Link>
+</div>
+
       <div className="space-y-8">
 
-        {/* Heading */}
-        <div>
-          <h1 className="text-3xl font-bold">
-            Dashboard
-          </h1>
-
-          <p className="text-muted-foreground">
-            Welcome back! Here's what's happening today.
-          </p>
-        </div>
+    
 
         {/* Statistics Cards */}
         <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
