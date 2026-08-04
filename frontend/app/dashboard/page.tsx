@@ -2,6 +2,7 @@ import DashboardLayout from "@/components/layout/DashboardLayout";
 import StatCard from "@/components/dashboard/StatCard";
 import TournamentTable from "@/components/dashboard/TournamentTable";
 import QuickActions from "@/components/dashboard/QuickActions";
+import Link from "next/link";
 
 import {
   Trophy,
@@ -12,7 +13,14 @@ import {
 
 export default function DashboardPage() {
   return (
+    
     <DashboardLayout>
+        <Link
+            href="/dashboard/create"
+            className="rounded-lg bg-green-600 px-5 py-3 text-white hover:bg-green-700"
+                >
+            + Create Tournament
+        </Link>
       <div className="space-y-8">
 
         {/* Heading */}
