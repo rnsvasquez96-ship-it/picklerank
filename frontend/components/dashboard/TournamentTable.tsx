@@ -5,31 +5,11 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
-const tournaments = [
-  {
-    id: 1,
-    name: "Manila Open 2026",
-    date: "Aug 20, 2026",
-    players: 64,
-    status: "Registration Open",
-  },
-  {
-    id: 2,
-    name: "Laguna Championship",
-    date: "Sept 5, 2026",
-    players: 32,
-    status: "Bracket Ready",
-  },
-  {
-    id: 3,
-    name: "Batangas Cup",
-    date: "Sept 18, 2026",
-    players: 48,
-    status: "In Progress",
-  },
-];
+import { getTournaments } from "@/lib/tournament";
 
-export default function TournamentTable() {
+export default async function TournamentTable() {
+  const tournaments = await getTournaments();
+
   return (
     <Card>
       <CardHeader>
@@ -38,32 +18,42 @@ export default function TournamentTable() {
 
       <CardContent>
         <div className="space-y-4">
-          {tournaments.map((tournament) => (
-            <div
-              key={tournament.id}
-              className="flex items-center justify-between rounded-lg border p-4"
-            >
-              <div>
-                <h3 className="font-semibold">
-                  {tournament.name}
-                </h3>
+          {tournaments.length === 0 ? (
+            <p className="text-center text-muted-foreground">
+              No tournaments found.
+            </p>
+          ) : (
+            tournaments.map((tournament: any) => (
+              <div
+                key={tournament.id}
+                className="flex items-center justify-between rounded-lg border p-4"
+              >
+                <div>
+                  <h3 className="font-semibold">
+                    {tournament.name}
+                  </h3>
 
-                <p className="text-sm text-muted-foreground">
-                  {tournament.date}
-                </p>
+                  <p className="text-sm text-muted-foreground">
+                    {tournament.location}
+                  </p>
+
+                  <p className="text-sm text-muted-foreground">
+                    {new Date(tournament.startDate).toLocaleDateString()}
+                  </p>
+                </div>
+
+                <div className="text-right">
+                  <p className="font-medium">
+                    {tournament.maxPlayers} Players
+                  </p>
+
+                  <p className="text-sm text-green-600">
+                    Upcoming
+                  </p>
+                </div>
               </div>
-
-              <div className="text-right">
-                <p className="font-medium">
-                  {tournament.players} Players
-                </p>
-
-                <p className="text-sm text-blue-600">
-                  {tournament.status}
-                </p>
-              </div>
-            </div>
-          ))}
+            ))
+          )}
         </div>
       </CardContent>
     </Card>

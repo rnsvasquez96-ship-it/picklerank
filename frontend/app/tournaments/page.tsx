@@ -1,33 +1,60 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import { Button } from "@/components/ui/button";
-import TournamentTable from "@/components/tournaments/TournamentTable";
 import Link from "next/link";
 
-export default function TournamentsPage() {
+import { getTournaments } from "@/lib/tournament";
+import TournamentList from "@/features/tournament/components/TournamentList";
+
+
+export default async function TournamentsPage() {
+
+  const tournaments = await getTournaments();
+
+
   return (
     <DashboardLayout>
-      <div className="space-y-6">
 
-        <div className="flex items-center justify-between">
+      <div className="mx-auto max-w-6xl space-y-8 p-8">
+
+
+        <div className="flex justify-between">
+
+
           <div>
+
             <h1 className="text-3xl font-bold">
               Tournaments
             </h1>
 
+
             <p className="text-muted-foreground">
-              Manage all pickleball tournaments.
+              Manage your tournaments.
             </p>
+
+
           </div>
 
-        <Link href="/tournaments/new">
-            <Button>
-             + New Tournament
-            </Button>
-        </Link>
+
+
+          <Link
+            href="/tournaments/new"
+            className="rounded bg-blue-600 px-4 py-2 text-white"
+          >
+            + New Tournament
+          </Link>
+
+
         </div>
-    <TournamentTable />
+
+
+
+        <TournamentList
+          tournaments={tournaments}
+        />
+
 
       </div>
+
+
     </DashboardLayout>
   );
 }

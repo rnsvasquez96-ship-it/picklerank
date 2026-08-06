@@ -1,5 +1,5 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import TournamentForm from "@/components/tournaments/TournamentForm";
+import TournamentForm from "@/features/tournament/components/TournamentForm";
 
 export default function NewTournamentPage() {
   return (

@@ -1,79 +1,44 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import StatCard from "@/components/dashboard/StatCard";
-import TournamentTable from "@/components/dashboard/TournamentTable";
-import QuickActions from "@/components/dashboard/QuickActions";
-import Link from "next/link";
 
-import {
-  Trophy,
-  Users,
-  Swords,
-  Building2,
-} from "lucide-react";
+import DashboardStats from "@/features/dashboard/components/DashboardStats";
+import UpcomingTournament from "@/features/dashboard/components/UpcomingTournament";
+import RecentMatches from "@/features/dashboard/components/RecentMatches";
 
-export default function DashboardPage() {
+import { getDashboard } from "@/lib/dashboard";
+
+export default async function DashboardPage() {
+  const dashboard = await getDashboard();
+
   return (
-    
     <DashboardLayout>
-        {/* Heading */}
-<div className="flex flex-col gap-4 md:flex-row md:items-center md:justify-between">
-  <div>
-    <h1 className="text-3xl font-bold">
-      Dashboard
-    </h1>
+      <div className="space-y-8 p-8">
 
-    <p className="text-muted-foreground">
-      Welcome back! Here's what's happening today.
-    </p>
-  </div>
+        <div>
+          <h1 className="text-3xl font-bold">
+            Dashboard
+          </h1>
 
-  <Link
-    href="/dashboard/create"
-    className="rounded-lg bg-green-600 px-5 py-3 text-white transition hover:bg-green-700"
-  >
-    + Create Tournament
-  </Link>
-</div>
-
-      <div className="space-y-8">
-
-    
-
-        {/* Statistics Cards */}
-        <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-4">
-          <StatCard
-            title="Tournaments"
-            value={12}
-            icon={<Trophy />}
-          />
-
-          <StatCard
-            title="Players"
-            value={248}
-            icon={<Users />}
-          />
-
-          <StatCard
-            title="Matches"
-            value={64}
-            icon={<Swords />}
-          />
-
-          <StatCard
-            title="Courts"
-            value={18}
-            icon={<Building2 />}
-          />
+          <p className="text-muted-foreground">
+            Welcome to PickleRank Tournament Management System.
+          </p>
         </div>
 
-        
-        <div className="grid gap-6 lg:grid-cols-3">
+        <DashboardStats
+          totalPlayers={dashboard.totalPlayers}
+          totalTournaments={dashboard.totalTournaments}
+          totalMatches={dashboard.totalMatches}
+          completedMatches={dashboard.completedMatches}
+        />
 
-        <div className="lg:col-span-2">
-    <TournamentTable />
-        </div>
+        <div className="grid gap-6 lg:grid-cols-2">
 
-    <QuickActions />
+          <UpcomingTournament
+            tournament={dashboard.upcomingTournament}
+          />
+
+          <RecentMatches
+            matches={dashboard.recentMatches}
+          />
 
         </div>
 
