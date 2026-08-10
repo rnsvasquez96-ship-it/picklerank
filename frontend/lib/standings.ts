@@ -1,23 +1,6 @@
 const API_URL = "http://localhost:3001";
 
-export async function getRankings() {
-  const res = await fetch(
-    `${API_URL}/ranking`,
-    {
-      cache: "no-store",
-    },
-  );
-
-  if (!res.ok) {
-    throw new Error(
-      "Failed to fetch rankings",
-    );
-  }
-
-  return res.json();
-}
-
-export async function getTournamentStandings(
+export async function getStandings(
   tournamentId: number,
 ) {
   const res = await fetch(

@@ -1,5 +1,5 @@
 import DashboardLayout from "@/components/layout/DashboardLayout";
-import MatchForm from "@/features/match/components/MatchForm";
+import MatchResultForm from "@/features/match/components/MatchResultForm";
 
 type Props = {
   params: Promise<{
@@ -14,22 +14,21 @@ export default async function EditMatchPage({
 
   return (
     <DashboardLayout>
-      <div className="mx-auto max-w-3xl space-y-6 p-8">
-
+      <div className="mx-auto max-w-xl space-y-6 p-8">
         <div>
           <h1 className="text-3xl font-bold">
-            Edit Match
+            Enter Match Result
           </h1>
 
           <p className="text-gray-500">
-            Update match information.
+            Enter the final scores. The winner will be selected automatically,
+            advanced to the next round, and the rankings will be updated.
           </p>
         </div>
 
-        <MatchForm
+        <MatchResultForm
           matchId={Number(id)}
         />
-
       </div>
     </DashboardLayout>
   );

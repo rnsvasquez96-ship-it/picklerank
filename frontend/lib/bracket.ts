@@ -11,7 +11,9 @@ export async function generateBracket(
   );
 
   if (!res.ok) {
-    throw new Error("Failed to generate bracket.");
+    throw new Error(
+      "Failed to generate bracket.",
+    );
   }
 
   return res.json();
@@ -28,7 +30,9 @@ export async function getBracket(
   );
 
   if (!res.ok) {
-    throw new Error("Failed to load bracket.");
+    throw new Error(
+      "Failed to load bracket.",
+    );
   }
 
   return res.json();

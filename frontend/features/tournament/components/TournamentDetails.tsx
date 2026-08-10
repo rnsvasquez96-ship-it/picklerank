@@ -1,12 +1,27 @@
 "use client";
 
+import {
+  AlertDialog,
+  AlertDialogAction,
+  AlertDialogCancel,
+  AlertDialogContent,
+  AlertDialogDescription,
+  AlertDialogFooter,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+} from "@/components/ui/alert-dialog";
+
 import { useEffect, useState } from "react";
 import Link from "next/link";
-import { Pencil, ArrowLeft, Trash2 } from "lucide-react";
+import {
+  Pencil,
+  ArrowLeft,
+  Trash2,
+} from "lucide-react";
 import { useRouter } from "next/navigation";
 
 import { generateBracket } from "@/lib/bracket";
-
 import {
   getTournament,
   deleteTournament,
@@ -19,6 +34,8 @@ import {
   CardTitle,
 } from "@/components/ui/card";
 
+import { toast } from "sonner";
+
 type Tournament = {
   id: number;
   name: string;
@@ -27,6 +44,12 @@ type Tournament = {
   endDate: string;
   maxPlayers: number;
   status: string;
+  format: string;
+
+  champion?: {
+    id: number;
+    name: string;
+  } | null;
 };
 
 type TournamentDetailsProps = {
@@ -54,7 +77,9 @@ export default function TournamentDetails({
     async function loadTournament() {
       try {
         const data =
-          await getTournament(tournamentId);
+          await getTournament(
+            tournamentId
+          );
 
         setTournament(data);
       } catch (error) {
@@ -87,81 +112,67 @@ export default function TournamentDetails({
     try {
       setGenerating(true);
 
-      await generateBracket(tournament.id);
+      await generateBracket(
+        tournament.id
+      );
 
-      alert(
-        "Bracket generated successfully!"
+      toast.success("Bracket generated successfully!");
+
+      router.push(
+        `/tournaments/${tournament.id}/bracket`
       );
 
       router.refresh();
     } catch (error) {
       console.error(error);
 
-      alert(
-        "Failed to generate bracket."
-      );
+
+      toast.error("Failed to generate bracket.");
     } finally {
       setGenerating(false);
     }
   }
 
   async function handleDelete() {
-    const confirmDelete = confirm(
-      "Are you sure you want to delete this tournament?"
-    );
+  try {
+    setDeleting(true);
 
-    if (!confirmDelete) return;
+    await deleteTournament(tournamentId);
 
-    try {
-      setDeleting(true);
+    toast.success("Tournament deleted successfully!");
 
-      await deleteTournament(
-        tournamentId
-      );
+    router.push("/tournaments");
+    router.refresh();
+  } catch (error) {
+    console.error(error);
 
-      alert(
-        "Tournament deleted successfully!"
-      );
-
-      router.push("/tournaments");
-
-      router.refresh();
-    } catch (error) {
-      console.error(error);
-
-      alert(
-        "Failed to delete tournament."
-      );
-    } finally {
-      setDeleting(false);
-    }
+    toast.error("Failed to delete tournament.");
+  } finally {
+    setDeleting(false);
   }
+}
 
   if (loading) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          Loading tournament...
-        </CardContent>
-      </Card>
+      <div className="rounded-lg border bg-white p-8 text-center">
+        Loading tournament...
+      </div>
     );
   }
 
   if (!tournament) {
     return (
-      <Card>
-        <CardContent className="p-6">
-          Tournament not found.
-        </CardContent>
-      </Card>
+      <div className="rounded-lg border bg-white p-8 text-center">
+        Tournament not found.
+      </div>
     );
   }
 
   return (
-    <Card>
+    <Card className="mb-6">
       <CardHeader>
         <CardTitle className="flex items-center justify-between">
-          <span>
+          <span className="text-3xl font-bold">
             {tournament.name}
           </span>
 
@@ -194,6 +205,16 @@ export default function TournamentDetails({
 
         <div>
           <p className="text-sm text-gray-500">
+            Format
+          </p>
+
+          <p className="font-medium">
+            {tournament.format}
+          </p>
+        </div>
+
+        <div>
+          <p className="text-sm text-gray-500">
             Start Date
           </p>
 
@@ -216,6 +237,24 @@ export default function TournamentDetails({
           </p>
         </div>
 
+        <div>
+          <p className="text-sm text-gray-500">
+            Champion
+          </p>
+
+          <div className="mt-2 rounded-lg border border-yellow-300 bg-yellow-50 p-4">
+            {tournament.champion ? (
+              <p className="text-xl font-bold text-yellow-700">
+                🏆 {tournament.champion.name}
+              </p>
+            ) : (
+              <p className="text-gray-500">
+                Champion not decided yet
+              </p>
+            )}
+          </div>
+        </div>
+
         <div className="flex flex-wrap gap-3">
           <Link
             href="/tournaments"
@@ -227,15 +266,21 @@ export default function TournamentDetails({
 
           <Link
             href={`/tournaments/${tournament.id}/edit`}
-            className="flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white"
+            className="flex items-center gap-2 rounded bg-blue-600 px-4 py-2 text-white hover:bg-blue-700"
           >
             <Pencil size={18} />
             Edit
           </Link>
 
           <button
-            onClick={handleGenerateBracket}
-            disabled={generating}
+            onClick={
+              handleGenerateBracket
+            }
+            disabled={
+              generating ||
+              tournament.status ===
+                "Completed"
+            }
             className="rounded bg-green-600 px-4 py-2 text-white hover:bg-green-700 disabled:opacity-50"
           >
             {generating
@@ -250,17 +295,44 @@ export default function TournamentDetails({
             View Bracket
           </Link>
 
-          <button
-            onClick={handleDelete}
-            disabled={deleting}
-            className="flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-white disabled:opacity-50"
-          >
-            <Trash2 size={18} />
+          <AlertDialog>
+  <AlertDialogTrigger asChild>
+    <button
+      disabled={deleting}
+      className="flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50"
+    >
+      <Trash2 size={18} />
 
-            {deleting
-              ? "Deleting..."
-              : "Delete"}
-          </button>
+      {deleting ? "Deleting..." : "Delete"}
+    </button>
+  </AlertDialogTrigger>
+
+  <AlertDialogContent>
+    <AlertDialogHeader>
+      <AlertDialogTitle>
+        Delete Tournament?
+      </AlertDialogTitle>
+
+      <AlertDialogDescription>
+        This action cannot be undone. This will permanently delete the tournament,
+        registrations, and related data.
+      </AlertDialogDescription>
+    </AlertDialogHeader>
+
+    <AlertDialogFooter>
+      <AlertDialogCancel>
+        Cancel
+      </AlertDialogCancel>
+
+      <AlertDialogAction
+        onClick={handleDelete}
+        className="bg-red-600 hover:bg-red-700"
+      >
+        Delete Tournament
+      </AlertDialogAction>
+    </AlertDialogFooter>
+  </AlertDialogContent>
+</AlertDialog>
         </div>
       </CardContent>
     </Card>

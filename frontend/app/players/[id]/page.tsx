@@ -14,7 +14,17 @@ export default async function PlayerPage({
 
   return (
     <DashboardLayout>
-      <div className="mx-auto max-w-4xl p-8">
+      <div className="mx-auto max-w-4xl space-y-8 p-8">
+        <div>
+          <h1 className="text-3xl font-bold">
+            Player Profile
+          </h1>
+
+          <p className="text-muted-foreground">
+            View player information, statistics, and match history.
+          </p>
+        </div>
+
         <PlayerDetails
           playerId={Number(id)}
         />

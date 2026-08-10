@@ -1,5 +1,20 @@
 const API_URL = "http://localhost:3001";
 
+export type MatchPayload = {
+  tournamentId: number;
+  player1Id: number;
+  player2Id: number;
+  player1Score: number;
+  player2Score: number;
+  winnerId?: number;
+  status: string;
+};
+
+export type MatchResultPayload = {
+  player1Score: number;
+  player2Score: number;
+};
+
 export async function getMatches() {
   const res = await fetch(`${API_URL}/match`, {
     cache: "no-store",
@@ -12,39 +27,59 @@ export async function getMatches() {
   return res.json();
 }
 
-export async function getMatch(id: number) {
-  const res = await fetch(`${API_URL}/match/${id}`, {
-    cache: "no-store",
-  });
+export async function getMatchesByTournament(
+  tournamentId: number,
+) {
+  const res = await fetch(
+    `${API_URL}/match/tournament/${tournamentId}`,
+    {
+      cache: "no-store",
+    },
+  );
 
-  const text = await res.text();
+  if (!res.ok) {
+    throw new Error(
+      "Failed to fetch tournament matches",
+    );
+  }
+
+  return res.json();
+}
+
+export async function getMatch(id: number) {
+  const res = await fetch(
+    `${API_URL}/match/${id}`,
+    {
+      cache: "no-store",
+    },
+  );
 
   if (!res.ok) {
     throw new Error("Failed to fetch match");
   }
 
-  return text ? JSON.parse(text) : null;
+  return res.json();
 }
 
-export async function createMatch(data: {
-  tournamentId: number;
-  player1Id: number;
-  player2Id: number;
-  player1Score: number;
-  player2Score: number;
-  winnerId?: number;
-  status: string;
-}) {
-  const res = await fetch(`${API_URL}/match`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/json",
+export async function createMatch(
+  data: MatchPayload,
+) {
+  const res = await fetch(
+    `${API_URL}/match`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify(data),
     },
-    body: JSON.stringify(data),
-  });
+  );
 
   if (!res.ok) {
-    throw new Error("Failed to create match");
+    throw new Error(
+      "Failed to create match",
+    );
   }
 
   return res.json();
@@ -52,38 +87,68 @@ export async function createMatch(data: {
 
 export async function updateMatch(
   id: number,
-  data: {
-    tournamentId: number;
-    player1Id: number;
-    player2Id: number;
-    player1Score: number;
-    player2Score: number;
-    winnerId?: number;
-    status: string;
-  }
+  data: MatchPayload,
 ) {
-  const res = await fetch(`${API_URL}/match/${id}`, {
-    method: "PATCH",
-    headers: {
-      "Content-Type": "application/json",
+  const res = await fetch(
+    `${API_URL}/match/${id}`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify(data),
     },
-    body: JSON.stringify(data),
-  });
+  );
 
   if (!res.ok) {
-    throw new Error("Failed to update match");
+    throw new Error(
+      "Failed to update match",
+    );
   }
 
   return res.json();
 }
 
-export async function deleteMatch(id: number) {
-  const res = await fetch(`${API_URL}/match/${id}`, {
-    method: "DELETE",
-  });
+export async function updateMatchResult(
+  id: number,
+  data: MatchResultPayload,
+) {
+  const res = await fetch(
+    `${API_URL}/match/${id}/result`,
+    {
+      method: "PATCH",
+      headers: {
+        "Content-Type":
+          "application/json",
+      },
+      body: JSON.stringify(data),
+    },
+  );
 
   if (!res.ok) {
-    throw new Error("Failed to delete match");
+    throw new Error(
+      "Failed to update match result",
+    );
+  }
+
+  return res.json();
+}
+
+export async function deleteMatch(
+  id: number,
+) {
+  const res = await fetch(
+    `${API_URL}/match/${id}`,
+    {
+      method: "DELETE",
+    },
+  );
+
+  if (!res.ok) {
+    throw new Error(
+      "Failed to delete match",
+    );
   }
 
   return res.json();
@@ -91,15 +156,15 @@ export async function deleteMatch(id: number) {
 
 export async function getTournamentOptions() {
   const res = await fetch(
-    "http://localhost:3001/tournament",
+    `${API_URL}/tournament`,
     {
       cache: "no-store",
-    }
+    },
   );
 
   if (!res.ok) {
     throw new Error(
-      "Failed to fetch tournaments"
+      "Failed to fetch tournaments",
     );
   }
 
@@ -108,15 +173,15 @@ export async function getTournamentOptions() {
 
 export async function getPlayerOptions() {
   const res = await fetch(
-    "http://localhost:3001/player",
+    `${API_URL}/player`,
     {
       cache: "no-store",
-    }
+    },
   );
 
   if (!res.ok) {
     throw new Error(
-      "Failed to fetch players"
+      "Failed to fetch players",
     );
   }
 

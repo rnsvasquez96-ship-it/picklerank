@@ -15,9 +15,14 @@ export default async function TournamentPage({
 
   return (
     <DashboardLayout>
-      <div className="mx-auto max-w-4xl">
-        <TournamentDetails tournamentId={Number(id)} />
-        <RegistrationList tournamentId={Number(id)} />
+      <div className="mx-auto max-w-4xl space-y-6">
+        <TournamentDetails
+          tournamentId={Number(id)}
+        />
+
+        <RegistrationList
+          tournamentId={Number(id)}
+        />
       </div>
     </DashboardLayout>
   );

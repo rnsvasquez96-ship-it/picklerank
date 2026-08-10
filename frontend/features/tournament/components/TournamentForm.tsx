@@ -2,6 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
+import { toast } from "sonner";
+import { Loader2 } from "lucide-react";
 
 import { Button } from "@/components/ui/button";
 
@@ -43,27 +45,20 @@ export default function TournamentForm({
 
     async function loadTournament() {
       try {
-        const tournament = await getTournament(
-          tournamentId
-        );
+        const tournament = await getTournament(tournamentId);
 
         setFormData({
           name: tournament.name,
           location: tournament.location,
-          startDate:
-            tournament.startDate.slice(0, 10),
-          endDate:
-            tournament.endDate.slice(0, 10),
+          startDate: tournament.startDate.slice(0, 10),
+          endDate: tournament.endDate.slice(0, 10),
           maxPlayers: tournament.maxPlayers,
           status: tournament.status,
           format: tournament.format,
         });
       } catch (error) {
         console.error(error);
-
-        alert(
-          "Failed to load tournament."
-        );
+        toast.error("Failed to load tournament.");
       } finally {
         setLoadingTournament(false);
       }
@@ -112,23 +107,23 @@ export default function TournamentForm({
           payload
         );
 
-        alert(
+        toast.success(
           "Tournament updated successfully!"
         );
       } else {
         await createTournament(payload);
 
-        alert(
+        toast.success(
           "Tournament created successfully!"
         );
       }
 
-      router.push("/dashboard");
+      router.push("/tournaments");
       router.refresh();
     } catch (error) {
       console.error(error);
 
-      alert(
+      toast.error(
         tournamentId !== undefined
           ? "Failed to update tournament."
           : "Failed to create tournament."
@@ -140,7 +135,8 @@ export default function TournamentForm({
 
   if (loadingTournament) {
     return (
-      <div className="rounded-lg border bg-white p-6">
+      <div className="flex items-center justify-center py-16">
+        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
         Loading tournament...
       </div>
     );
@@ -149,7 +145,7 @@ export default function TournamentForm({
   return (
     <form
       onSubmit={handleSubmit}
-      className="space-y-6 rounded-lg border bg-white p-6"
+      className="space-y-6 rounded-xl border bg-white p-6 shadow-sm"
     >
       <div>
         <label className="mb-2 block font-medium">
@@ -245,11 +241,9 @@ export default function TournamentForm({
           <option value="Single Elimination">
             Single Elimination
           </option>
-
           <option value="Double Elimination">
             Double Elimination
           </option>
-
           <option value="Round Robin">
             Round Robin
           </option>
@@ -270,11 +264,9 @@ export default function TournamentForm({
           <option value="Upcoming">
             Upcoming
           </option>
-
           <option value="Ongoing">
             Ongoing
           </option>
-
           <option value="Completed">
             Completed
           </option>
@@ -284,14 +276,20 @@ export default function TournamentForm({
       <Button
         type="submit"
         disabled={loading}
+        className="w-full"
       >
-        {loading
-          ? tournamentId !== undefined
-            ? "Saving..."
-            : "Creating..."
-          : tournamentId !== undefined
-          ? "Save Changes"
-          : "Create Tournament"}
+        {loading ? (
+          <>
+            <Loader2 className="mr-2 h-4 w-4 animate-spin" />
+            {tournamentId
+              ? "Saving..."
+              : "Creating..."}
+          </>
+        ) : tournamentId ? (
+          "Save Changes"
+        ) : (
+          "Create Tournament"
+        )}
       </Button>
     </form>
   );
