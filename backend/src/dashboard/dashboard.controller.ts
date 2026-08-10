@@ -7,8 +7,8 @@ export class DashboardController {
     private readonly dashboardService: DashboardService,
   ) {}
 
-  @Get()
-  getDashboard() {
-    return this.dashboardService.getDashboard();
+  @Get("stats")
+  getStats() {
+    return this.dashboardService.getStats();
   }
 }

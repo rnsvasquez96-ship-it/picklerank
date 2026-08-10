@@ -2,15 +2,18 @@ import {
   Controller,
   Get,
   Post,
+  Patch,
   Body,
   Param,
   Delete,
-} from '@nestjs/common';
+  ParseIntPipe,
+} from "@nestjs/common";
 
-import { PlayerService } from './player.service';
-import { CreatePlayerDto } from './dto/create-player.dto';
+import { PlayerService } from "./player.service";
+import { CreatePlayerDto } from "./dto/create-player.dto";
+import { UpdatePlayerDto } from "./dto/update-player.dto";
 
-@Controller('player')
+@Controller("player")
 export class PlayerController {
   constructor(
     private readonly playerService: PlayerService,
@@ -26,13 +29,32 @@ export class PlayerController {
     return this.playerService.findAll();
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.playerService.findOne(+id);
+  @Get(":id/stats")
+  getPlayerStats(
+    @Param("id", ParseIntPipe) id: number,
+  ) {
+    return this.playerService.getPlayerStats(id);
   }
 
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.playerService.remove(+id);
+  @Get(":id")
+  findOne(
+    @Param("id", ParseIntPipe) id: number,
+  ) {
+    return this.playerService.findOne(id);
+  }
+
+  @Patch(":id")
+  update(
+    @Param("id", ParseIntPipe) id: number,
+    @Body() data: UpdatePlayerDto,
+  ) {
+    return this.playerService.update(id, data);
+  }
+
+  @Delete(":id")
+  remove(
+    @Param("id", ParseIntPipe) id: number,
+  ) {
+    return this.playerService.remove(id);
   }
 }

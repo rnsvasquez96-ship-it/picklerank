@@ -1,18 +1,18 @@
 import {
   Controller,
- Get,
+  Get,
   Post,
   Body,
   Patch,
   Param,
   Delete,
-} from '@nestjs/common';
+} from "@nestjs/common";
 
-import { TournamentService } from './tournament.service';
-import { CreateTournamentDto } from './dto/create-tournament.dto';
-import { UpdateTournamentDto } from './dto/update-tournament.dto';
+import { TournamentService } from "./tournament.service";
+import { CreateTournamentDto } from "./dto/create-tournament.dto";
+import { UpdateTournamentDto } from "./dto/update-tournament.dto";
 
-@Controller('tournament')
+@Controller("tournament")
 export class TournamentController {
   constructor(
     private readonly tournamentService: TournamentService,
@@ -32,16 +32,33 @@ export class TournamentController {
     return this.tournamentService.findAll();
   }
 
-  @Get(':id')
+  // ✅ Tournament Progress
+  @Get(":id/progress")
+  getProgress(
+    @Param("id") id: string,
+  ) {
+    return this.tournamentService.getProgress(+id);
+  }
+
+  // ✅ Tournament Standings
+  @Get(":id/standings")
+  getStandings(
+    @Param("id") id: string,
+  ) {
+    return this.tournamentService.getStandings(+id);
+  }
+
+  // ✅ Get Tournament
+  @Get(":id")
   findOne(
-    @Param('id') id: string,
+    @Param("id") id: string,
   ) {
     return this.tournamentService.findOne(+id);
   }
 
-  @Patch(':id')
+  @Patch(":id")
   update(
-    @Param('id') id: string,
+    @Param("id") id: string,
     @Body() updateTournamentDto: UpdateTournamentDto,
   ) {
     return this.tournamentService.update(
@@ -50,19 +67,19 @@ export class TournamentController {
     );
   }
 
-  // ✅ NEW ENDPOINT
-  @Post(':id/generate-bracket')
+  // ✅ Generate Bracket
+  @Post(":id/generate-bracket")
   generateBracket(
-    @Param('id') id: string,
+    @Param("id") id: string,
   ) {
     return this.tournamentService.generateBracket(
       +id,
     );
   }
 
-  @Delete(':id')
+  @Delete(":id")
   remove(
-    @Param('id') id: string,
+    @Param("id") id: string,
   ) {
     return this.tournamentService.remove(+id);
   }

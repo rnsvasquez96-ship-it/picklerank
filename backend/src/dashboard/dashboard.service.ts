@@ -3,9 +3,11 @@ import { PrismaService } from "../prisma/prisma.service";
 
 @Injectable()
 export class DashboardService {
-  constructor(private prisma: PrismaService) {}
+  constructor(
+    private prisma: PrismaService,
+  ) {}
 
-  async getDashboard() {
+  async getStats() {
     const totalPlayers =
       await this.prisma.player.count();
 
@@ -17,6 +19,27 @@ export class DashboardService {
 
     const completedMatches =
       await this.prisma.match.count({
+        where: {
+          status: "Completed",
+        },
+      });
+
+    const upcoming =
+      await this.prisma.tournament.count({
+        where: {
+          status: "Upcoming",
+        },
+      });
+
+    const ongoing =
+      await this.prisma.tournament.count({
+        where: {
+          status: "Ongoing",
+        },
+      });
+
+    const completed =
+      await this.prisma.tournament.count({
         where: {
           status: "Completed",
         },
@@ -39,8 +62,10 @@ export class DashboardService {
           createdAt: "desc",
         },
         include: {
+          tournament: true,
           player1: true,
           player2: true,
+          winner: true,
         },
       });
 
@@ -49,6 +74,11 @@ export class DashboardService {
       totalTournaments,
       totalMatches,
       completedMatches,
+
+      upcoming,
+      ongoing,
+      completed,
+
       upcomingTournament,
       recentMatches,
     };

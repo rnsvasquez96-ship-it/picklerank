@@ -1,7 +1,12 @@
-import { Controller, Get } from '@nestjs/common';
-import { RankingService } from './ranking.service';
+import {
+  Controller,
+  Get,
+  Param,
+} from "@nestjs/common";
 
-@Controller('ranking')
+import { RankingService } from "./ranking.service";
+
+@Controller("ranking")
 export class RankingController {
   constructor(
     private readonly rankingService: RankingService,
@@ -10,5 +15,15 @@ export class RankingController {
   @Get()
   getRankings() {
     return this.rankingService.getRankings();
+  }
+
+  // ✅ Tournament standings
+  @Get("tournament/:id")
+  getTournamentStandings(
+    @Param("id") id: string,
+  ) {
+    return this.rankingService.getTournamentStandings(
+      +id,
+    );
   }
 }

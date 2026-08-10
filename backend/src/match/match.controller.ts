@@ -11,6 +11,7 @@ import {
 import { MatchService } from "./match.service";
 import { CreateMatchDto } from "./dto/create-match.dto";
 import { UpdateMatchDto } from "./dto/update-match.dto";
+import { UpdateResultDto } from "./dto/update-result.dto";
 
 @Controller("match")
 export class MatchController {
@@ -30,7 +31,6 @@ export class MatchController {
     return this.matchService.findAll();
   }
 
-  // ✅ NEW: Get all matches for a tournament
   @Get("tournament/:id")
   findByTournament(
     @Param("id") id: string,
@@ -43,6 +43,17 @@ export class MatchController {
     @Param("id") id: string,
   ) {
     return this.matchService.findOne(+id);
+  }
+
+  @Patch(":id/result")
+  updateResult(
+    @Param("id") id: string,
+    @Body() data: UpdateResultDto,
+  ) {
+    return this.matchService.updateResult(
+      +id,
+      data,
+    );
   }
 
   @Patch(":id")

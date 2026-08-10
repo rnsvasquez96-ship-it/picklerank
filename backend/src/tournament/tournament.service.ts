@@ -19,12 +19,15 @@ export class TournamentService {
 
 
   findAll() {
-    return this.prisma.tournament.findMany({
-      orderBy: {
-        createdAt: 'desc',
-      },
-    });
-  }
+  return this.prisma.tournament.findMany({
+    include: {
+      champion: true,
+    },
+    orderBy: {
+      createdAt: 'desc',
+    },
+  }); 
+}
 
 
 
@@ -33,9 +36,12 @@ export class TournamentService {
     const tournament =
       await this.prisma.tournament.findUnique({
         where: {
-          id,
+         id,
         },
-      });
+        include: {
+        champion: true,
+        },
+        });
 
 
     if (!tournament) {
@@ -47,6 +53,62 @@ export class TournamentService {
 
     return tournament;
   }
+
+  async getProgress(id: number) {
+  const tournament =
+    await this.prisma.tournament.findUnique({
+      where: {
+        id,
+      },
+      include: {
+        champion: true,
+      },
+    });
+
+  if (!tournament) {
+    throw new NotFoundException(
+      `Tournament with id ${id} not found`,
+    );
+  }
+
+  const totalMatches =
+    await this.prisma.match.count({
+      where: {
+        tournamentId: id,
+      },
+    });
+
+  const completedMatches =
+    await this.prisma.match.count({
+      where: {
+        tournamentId: id,
+        status: "Completed",
+      },
+    });
+
+  const remainingMatches =
+    totalMatches - completedMatches;
+
+  const progress =
+    totalMatches === 0
+      ? 0
+      : Math.round(
+          (completedMatches / totalMatches) * 100,
+        );
+
+  return {
+    tournamentId: tournament.id,
+    tournament: tournament.name,
+    status: tournament.status,
+
+    totalMatches,
+    completedMatches,
+    remainingMatches,
+    progress,
+
+    champion: tournament.champion,
+  };
+}
 
 
 
@@ -127,9 +189,7 @@ export class TournamentService {
     );
   }
 
-  const matches: Awaited<
-  ReturnType<typeof this.prisma.match.create>
-  >[] = [];
+  const matches: any[] = [];
 
   // Pair players
   for (
@@ -167,6 +227,104 @@ export class TournamentService {
     message: 'Bracket generated successfully.',
     matches,
   };
+}
+  async getStandings(id: number) {
+  const tournament =
+    await this.prisma.tournament.findUnique({
+      where: {
+        id,
+      },
+    });
+
+  if (!tournament) {
+    throw new NotFoundException(
+      `Tournament with id ${id} not found`,
+    );
+  }
+
+  const registrations =
+    await this.prisma.registration.findMany({
+      where: {
+        tournamentId: id,
+      },
+      include: {
+        player: true,
+      },
+    });
+
+  const standings = await Promise.all(
+    registrations.map(async (registration) => {
+      const playerId = registration.playerId;
+
+      const matches =
+        await this.prisma.match.findMany({
+          where: {
+            tournamentId: id,
+            status: "Completed",
+            OR: [
+              {
+                player1Id: playerId,
+              },
+              {
+                player2Id: playerId,
+              },
+            ],
+          },
+        });
+
+      const wins = matches.filter(
+        (m) => m.winnerId === playerId,
+      ).length;
+
+      const losses = matches.length - wins;
+
+      let pointsFor = 0;
+      let pointsAgainst = 0;
+
+      for (const match of matches) {
+        if (match.player1Id === playerId) {
+          pointsFor += match.player1Score;
+          pointsAgainst += match.player2Score;
+        } else {
+          pointsFor += match.player2Score;
+          pointsAgainst += match.player1Score;
+        }
+      }
+
+      return {
+        playerId,
+        name: registration.player.name,
+        wins,
+        losses,
+        played: matches.length,
+        winPercentage:
+          matches.length === 0
+            ? 0
+            : Math.round(
+                (wins / matches.length) * 100,
+              ),
+        pointsFor,
+        pointsAgainst,
+      };
+    }),
+  );
+
+  standings.sort((a, b) => {
+    if (b.wins !== a.wins) {
+      return b.wins - a.wins;
+    }
+
+    return (
+      b.pointsFor - a.pointsFor
+    );
+  });
+
+  return standings.map(
+    (player, index) => ({
+      rank: index + 1,
+      ...player,
+    }),
+  );
 }
 
 

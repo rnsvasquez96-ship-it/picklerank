@@ -17,10 +17,13 @@ model Tournament {
   status     String   @default("Upcoming")
   format     String   @default("Single Elimination")
 
+  championId Int?
+  champion   Player? @relation("Champion", fields: [championId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  matches Match[]
+  matches       Match[]
   registrations Registration[]
 }
 
@@ -36,6 +39,9 @@ model Player {
   matchesAsPlayer1 Match[] @relation("PlayerOne")
   matchesAsPlayer2 Match[] @relation("PlayerTwo")
   matchesWon       Match[] @relation("Winner")
+
+  championships Tournament[] @relation("Champion")
+
   registrations Registration[]
 }
 
@@ -45,11 +51,11 @@ model Match {
   tournamentId Int
   tournament   Tournament @relation(fields: [tournamentId], references: [id])
 
-  player1Id Int
-  player1   Player @relation("PlayerOne", fields: [player1Id], references: [id])
+  player1Id Int?
+  player1   Player? @relation("PlayerOne", fields: [player1Id], references: [id])
 
-  player2Id Int
-  player2   Player @relation("PlayerTwo", fields: [player2Id], references: [id])
+  player2Id Int?
+  player2   Player? @relation("PlayerTwo", fields: [player2Id], references: [id])
 
   player1Score Int @default(0)
   player2Score Int @default(0)
@@ -57,22 +63,22 @@ model Match {
   winnerId Int?
   winner   Player? @relation("Winner", fields: [winnerId], references: [id])
 
-  status String
+  status String @default("Pending")
+
+  round Int @default(1)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-
-  round Int @default(1)
 }
 
 model Registration {
   id Int @id @default(autoincrement())
 
   tournamentId Int
-  tournament Tournament @relation(fields: [tournamentId], references: [id])
+  tournament   Tournament @relation(fields: [tournamentId], references: [id])
 
   playerId Int
-  player Player @relation(fields: [playerId], references: [id])
+  player   Player @relation(fields: [playerId], references: [id])
 
   seed Int?
 
