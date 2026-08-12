@@ -6,7 +6,7 @@ import {
 
 export default function Topbar() {
   return (
-    <header className="sticky top-0 z-30 flex h-16 items-center justify-between border-b border-gray-200 bg-white/90 px-8 backdrop-blur">
+    <header className="sticky top-0 z-30 flex items-center justify-between border-b border-gray-200 bg-white/90 px-4 py-4 backdrop-blur sm:px-6 lg:px-8">
 
       {/* Left */}
       <div>

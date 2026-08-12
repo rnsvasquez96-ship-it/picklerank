@@ -43,7 +43,7 @@ const menuItems = [
 
 export default function Sidebar() {
   return (
-    <aside className="flex w-64 flex-col border-r border-gray-200 bg-white shadow-sm">
+    <aside className="fixed left-0 top-0 z-40 hidden h-screen w-72 flex-col border-r border-gray-200 bg-white shadow-sm lg:flex">
 
       {/* Logo */}
       <div className="border-b border-gray-100 p-6">

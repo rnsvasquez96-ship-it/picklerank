@@ -28,14 +28,16 @@ export default function Bracket({
     .sort((a, b) => a - b);
 
   return (
-    <div className="flex gap-8 overflow-x-auto pb-6">
-      {rounds.map((round) => (
-        <RoundColumn
-          key={round}
-          round={round}
-          matches={groupedMatches[round]}
-        />
-      ))}
+    <div className="overflow-x-auto">
+      <div className="flex min-w-max gap-8 pb-6">
+        {rounds.map((round) => (
+          <RoundColumn
+            key={round}
+            title={`Round ${round}`}
+            matches={groupedMatches[round]}
+          />
+        ))}
+      </div>
     </div>
   );
 }
