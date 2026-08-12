@@ -27,15 +27,11 @@ type Props = {
   matchId?: number;
 };
 
-export default function MatchForm({
-  matchId,
-}: Props) {
+export default function MatchForm({ matchId }: Props) {
   const router = useRouter();
 
   const [loading, setLoading] = useState(false);
-
   const [tournaments, setTournaments] = useState<Tournament[]>([]);
-
   const [players, setPlayers] = useState<Player[]>([]);
 
   const [formData, setFormData] = useState({
@@ -50,22 +46,28 @@ export default function MatchForm({
 
   useEffect(() => {
     async function loadData() {
-      const tournamentData = await getTournamentOptions();
-      const playerData = await getPlayerOptions();
+      try {
+        const tournamentData = await getTournamentOptions();
+        const playerData = await getPlayerOptions();
 
-      setTournaments(tournamentData);
-      setPlayers(playerData);
+        setTournaments(tournamentData);
+        setPlayers(playerData);
+      } catch (error) {
+        console.error(error);
+      }
     }
 
     loadData();
   }, []);
 
   useEffect(() => {
-    if (matchId === undefined) return;
+    if (matchId == null) return;
+
+    const id = matchId;
 
     async function loadMatch() {
       try {
-        const match = await getMatch(matchId!);
+        const match = await getMatch(id);
 
         setFormData({
           tournamentId: match.tournamentId,
@@ -114,9 +116,7 @@ export default function MatchForm({
 
       if (formData.player1Score > formData.player2Score) {
         winnerId = formData.player1Id;
-      } else if (
-        formData.player2Score > formData.player1Score
-      ) {
+      } else if (formData.player2Score > formData.player1Score) {
         winnerId = formData.player2Id;
       }
 
@@ -125,13 +125,11 @@ export default function MatchForm({
         winnerId,
       };
 
-      if (matchId !== undefined) {
-        await updateMatch(matchId!, data);
-
+      if (matchId != null) {
+        await updateMatch(matchId, data);
         alert("Match updated.");
       } else {
         await createMatch(data);
-
         alert("Match created.");
       }
 
@@ -139,7 +137,6 @@ export default function MatchForm({
       router.refresh();
     } catch (error) {
       console.error(error);
-
       alert("Failed to save match.");
     } finally {
       setLoading(false);
@@ -270,10 +267,7 @@ export default function MatchForm({
         </select>
       </div>
 
-      <Button
-        type="submit"
-        disabled={loading}
-      >
+      <Button type="submit" disabled={loading}>
         {loading
           ? "Saving..."
           : matchId

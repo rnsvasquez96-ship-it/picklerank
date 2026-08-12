@@ -149,11 +149,9 @@ export default function RegistrationList({
             </span>
 
             <AlertDialog>
-              <AlertDialogTrigger>
-                <button className="rounded bg-red-600 px-3 py-1 text-white hover:bg-red-700">
-                  Remove
-                </button>
-              </AlertDialogTrigger>
+              <AlertDialogTrigger className="rounded bg-red-600 px-3 py-1 text-white hover:bg-red-700">
+    Remove
+</AlertDialogTrigger>
 
               <AlertDialogContent>
                 <AlertDialogHeader>

@@ -1,0 +1,23 @@
+{
+  "/_global-error/page": "/_global-error",
+  "/_not-found/page": "/_not-found",
+  "/dashboard/create/page": "/dashboard/create",
+  "/dashboard/page": "/dashboard",
+  "/favicon.ico/route": "/favicon.ico",
+  "/matches/[id]/edit/page": "/matches/[id]/edit",
+  "/matches/[id]/page": "/matches/[id]",
+  "/matches/new/page": "/matches/new",
+  "/matches/page": "/matches",
+  "/page": "/",
+  "/players/[id]/edit/page": "/players/[id]/edit",
+  "/players/[id]/page": "/players/[id]",
+  "/players/new/page": "/players/new",
+  "/players/page": "/players",
+  "/rankings/page": "/rankings",
+  "/tournaments/[id]/bracket/page": "/tournaments/[id]/bracket",
+  "/tournaments/[id]/edit/page": "/tournaments/[id]/edit",
+  "/tournaments/[id]/page": "/tournaments/[id]",
+  "/tournaments/[id]/standings/page": "/tournaments/[id]/standings",
+  "/tournaments/new/page": "/tournaments/new",
+  "/tournaments/page": "/tournaments"
+}

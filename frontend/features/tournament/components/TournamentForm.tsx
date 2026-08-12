@@ -38,34 +38,36 @@ export default function TournamentForm({
   });
 
   useEffect(() => {
-    if (tournamentId === undefined) {
+  if (tournamentId == null) {
+    setLoadingTournament(false);
+    return;
+  }
+
+  const id = tournamentId;
+
+  async function loadTournament() {
+    try {
+      const tournament = await getTournament(id);
+
+      setFormData({
+        name: tournament.name,
+        location: tournament.location,
+        startDate: tournament.startDate.slice(0, 10),
+        endDate: tournament.endDate.slice(0, 10),
+        maxPlayers: tournament.maxPlayers,
+        status: tournament.status,
+        format: tournament.format,
+      });
+    } catch (error) {
+      console.error(error);
+      toast.error("Failed to load tournament.");
+    } finally {
       setLoadingTournament(false);
-      return;
     }
+  }
 
-    async function loadTournament() {
-      try {
-        const tournament = await getTournament(tournamentId);
-
-        setFormData({
-          name: tournament.name,
-          location: tournament.location,
-          startDate: tournament.startDate.slice(0, 10),
-          endDate: tournament.endDate.slice(0, 10),
-          maxPlayers: tournament.maxPlayers,
-          status: tournament.status,
-          format: tournament.format,
-        });
-      } catch (error) {
-        console.error(error);
-        toast.error("Failed to load tournament.");
-      } finally {
-        setLoadingTournament(false);
-      }
-    }
-
-    loadTournament();
-  }, [tournamentId]);
+  loadTournament();
+}, [tournamentId]);
 
   function handleChange(
     e: React.ChangeEvent<
