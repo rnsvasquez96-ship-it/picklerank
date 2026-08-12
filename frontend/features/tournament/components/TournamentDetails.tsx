@@ -296,16 +296,15 @@ export default function TournamentDetails({
           </Link>
 
           <AlertDialog>
-  <AlertDialogTrigger asChild>
-    <button
-      disabled={deleting}
-      className="flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50"
-    >
-      <Trash2 size={18} />
-
-      {deleting ? "Deleting..." : "Delete"}
-    </button>
-  </AlertDialogTrigger>
+  <AlertDialogTrigger>
+  <button
+    disabled={deleting}
+    className="flex items-center gap-2 rounded bg-red-600 px-4 py-2 text-white hover:bg-red-700 disabled:opacity-50"
+  >
+    <Trash2 size={18} />
+    {deleting ? "Deleting..." : "Delete"}
+  </button>
+</AlertDialogTrigger>
 
   <AlertDialogContent>
     <AlertDialogHeader>

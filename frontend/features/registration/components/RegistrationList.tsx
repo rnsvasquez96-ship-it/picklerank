@@ -46,10 +46,7 @@ export default function RegistrationList({
 
   async function loadData() {
     try {
-      const registrationData = await getRegistrations(
-        tournamentId
-      );
-
+      const registrationData = await getRegistrations(tournamentId);
       const playerData = await getPlayers();
 
       setRegistrations(registrationData);
@@ -74,13 +71,10 @@ export default function RegistrationList({
       });
 
       toast.success("Player registered successfully!");
-
       setSelectedPlayer("");
-
       loadData();
     } catch (error) {
       console.error(error);
-
       toast.error("Failed to register player.");
     }
   }
@@ -90,11 +84,9 @@ export default function RegistrationList({
       await removeRegistration(id);
 
       toast.success("Player removed successfully.");
-
       loadData();
     } catch (error) {
       console.error(error);
-
       toast.error("Failed to remove player.");
     }
   }
@@ -113,9 +105,7 @@ export default function RegistrationList({
       <div className="mb-6 flex gap-3">
         <select
           value={selectedPlayer}
-          onChange={(e) =>
-            setSelectedPlayer(e.target.value)
-          }
+          onChange={(e) => setSelectedPlayer(e.target.value)}
           className="flex-1 rounded-md border p-3"
         >
           <option value="">
@@ -127,8 +117,7 @@ export default function RegistrationList({
               (player) =>
                 !registrations.some(
                   (registration) =>
-                    registration.player.id ===
-                    player.id
+                    registration.player.id === player.id
                 )
             )
             .map((player) => (
@@ -160,7 +149,7 @@ export default function RegistrationList({
             </span>
 
             <AlertDialog>
-              <AlertDialogTrigger asChild>
+              <AlertDialogTrigger>
                 <button className="rounded bg-red-600 px-3 py-1 text-white hover:bg-red-700">
                   Remove
                 </button>
@@ -173,9 +162,8 @@ export default function RegistrationList({
                   </AlertDialogTitle>
 
                   <AlertDialogDescription>
-                    This player will be removed
-                    from the tournament
-                    registration.
+                    This player will be removed from the
+                    tournament registration.
                   </AlertDialogDescription>
                 </AlertDialogHeader>
 
@@ -186,9 +174,7 @@ export default function RegistrationList({
 
                   <AlertDialogAction
                     onClick={() =>
-                      handleRemove(
-                        registration.id
-                      )
+                      handleRemove(registration.id)
                     }
                     className="bg-red-600 hover:bg-red-700"
                   >

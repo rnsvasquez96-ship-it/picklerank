@@ -4,8 +4,9 @@ import RoundColumn from "./RoundColumn";
 import { BracketMatch } from "../types";
 
 type Props = {
-  matches: BracketMatch[];
-};
+    title: string;
+    matches: BracketMatch[];
+}
 
 export default function Bracket({
   matches,
