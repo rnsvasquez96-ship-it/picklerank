@@ -2,20 +2,25 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
-  console.log("🔥 MAIN.TS IS RUNNING");
+  console.log('🔥 MAIN.TS IS RUNNING');
 
   const app = await NestFactory.create(AppModule);
 
+  // Enable CORS
   app.enableCors({
-    origin: 'http://localhost:3000',
+    origin: true,
     credentials: true,
   });
 
-  console.log("🔥 ABOUT TO LISTEN");
+  // Render provides PORT automatically.
+  // Local development will use 3001.
+  const port = process.env.PORT || 3001;
 
-  await app.listen(3001);
+  console.log('🔥 ABOUT TO LISTEN');
 
-  console.log("🚀 Backend running on http://localhost:3001");
+  await app.listen(port);
+
+  console.log(`🚀 Backend running on port ${port}`);
 }
 
 bootstrap();
